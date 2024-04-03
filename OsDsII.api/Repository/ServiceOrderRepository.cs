@@ -1,4 +1,6 @@
-﻿using OsDsII.api.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using OsDsII.api.Data;
+using OsDsII.api.Models;
 
 namespace OsDsII.api.Repository
 {
@@ -12,7 +14,31 @@ namespace OsDsII.api.Repository
 
         public async Task<List<ServiceOrder>>GetAllAsync()
         {
-            return await
+            return await _dataContext.ServiceOrders.ToListAsync();
         }
+
+        public async Task<ServiceOrder> GetByIdAsync(int id)
+        {
+            return await _dataContext.ServiceOrders.FirstOrDefaultAsync(s => s.Id == id);
+        }
+        public async Task AddAsync(ServiceOrder serviceOrder)
+        {
+            await _dataContext.ServiceOrders.AddAsync(serviceOrder);
+            await _dataContext.SaveChangesAsync();
+        }
+
+        public async Task FinishAsync(ServiceOrder serviceOrder)
+        {
+            _dataContext.ServiceOrders.Update(serviceOrder);
+            await _dataContext.SaveChangesAsync();
+        }
+
+        public async Task CancelAsync(ServiceOrder serviceOrder)
+        {
+            _dataContext.ServiceOrders.Update(serviceOrder);
+            await _dataContext.SaveChangesAsync();
+        }
+
+
     }
 }
